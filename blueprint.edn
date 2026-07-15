@@ -1,0 +1,39 @@
+{:itonami.blueprint/id "cloud-itonami-isic-3230"
+ :itonami.blueprint/name "Manufacture of sports goods"
+ :itonami.blueprint/isic-rev5 "3230"
+ :itonami.blueprint/domain :sports-goods/manufacturing
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:worker-safety :materials-safety :consumer-protection]
+ :itonami.blueprint/governor :sports-goods-plant-operations-governor
+ :itonami.blueprint/robotics true
+ :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger :cae]
+ :itonami.blueprint/optional-technologies []
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/maturity :implemented
+ :itonami.blueprint/implemented-slice
+ "SportsGoodsAdvisor ⊣ Sports Goods Plant Operations Governor,
+ langgraph-clj StateGraph, append-only audit ledger. A sports-goods
+ PLANT OPERATIONS COORDINATION actor for molding/assembly/finishing
+ lines producing finished sports goods (balls/rackets/protective
+ gear/fitness equipment) -- not direct molding/assembly-line-
+ equipment control authority and not a product-safety-certification
+ (e.g. impact-protection standard compliance) authority. Four ops
+ (`:log-production-batch` / `:schedule-maintenance` /
+ `:flag-safety-concern` / `:coordinate-shipment`), all `:effect
+ :propose` only. Thirteen concrete governor checks elaborate this
+ blueprint's four HARD invariants: propose-only effect, closed op
+ allowlist, closed proposal-effect allowlist (no direct molding/
+ assembly-line-equipment control), permanent equipment-actuate block,
+ permanent product-safety-certification-authority block (this actor
+ never self-issues an impact-protection/product-safety compliance
+ certification), independent plant-equipment verification/
+ registration before maintenance scheduling, independent batch
+ verification/registration before shipment coordination, independent
+ shipment-quantity recompute against the batch's own logged
+ production quantity, double-schedule guard, product-type validation,
+ impact-protection-rating plausibility validation, batch-weight
+ plausibility validation, and defect-rate plausibility validation.
+ Safety-concern flagging (materials-safety hazard, product-safety-
+ standard/impact-protection-rating concern) ALWAYS escalates to a
+ human plant supervisor; `:log-production-batch` is the only op
+ eligible to auto-commit, and only at phase 3 when governor-clean."}
