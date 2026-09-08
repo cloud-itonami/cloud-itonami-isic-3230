@@ -34,7 +34,7 @@
   append-only vector -- so re-running produces byte-identical output.
 
   Run: `clojure -M:dev:render-html [out-file]`"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [langgraph.graph :as g]
             [sportsgoodsmfg.governor :as governor]
             [sportsgoodsmfg.operation :as op]
