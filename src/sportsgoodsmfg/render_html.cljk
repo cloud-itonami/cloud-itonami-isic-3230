@@ -33,7 +33,7 @@
   atom, and every collection rendered is either sorted by id or is an
   append-only vector -- so re-running produces byte-identical output.
 
-  Run: `clojure -M:dev:render-html [out-file]`"
+  Run: `kbb -M:dev:render-html [out-file]`"
   (:require [kotoba.lang.text :as str]
             [langgraph.graph :as g]
             [sportsgoodsmfg.governor :as governor]
