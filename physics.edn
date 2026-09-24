@@ -1,0 +1,44 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README: an ISIC 3230 plant molds, assembles and finishes balls, rackets,
+;; protective gear and fitness equipment. The physical work around that
+;; plant: compression-moulding rubber-coated weight plates, an arm stacking
+;; the finished plates onto a pallet, and an AMR moving boxed fitness
+;; machines to the shipping dock.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-3230"
+ :cases
+ [{:id :rubber-plate-compression-cure
+   :kind :thermal
+   :procedure "compression mould (160 C platens) vulcanises the rubber of a bumper weight plate; the cure clock starts when the rubber's mid-plane reaches 150 C. Half the rubber section is modelled with an adiabatic (symmetry) back face, so the back face is the mid-plane"
+   :params {:conductivity-w-mk 0.20 :density-kg-m3 1150.0 :specific-heat-j-kgk 1800.0
+            :t0-c 25.0 :t-hot-c 160.0 :front-fixed? true :h-back-w-m2k 0.0
+            :threshold-c 150.0 :duration-s 7200.0 :nodes 11}
+   :sweep {:param :thickness-m :values [0.004 0.006 0.008 0.010 0.013]}
+   :quantity :time-to-threshold-s
+   :limit {:max 900.0 :basis "estimate: a 15-minute heat-up share of the press cycle; the rubber compound's properties are estimates"}
+   :boundary {:lo 0.002 :hi 0.03}}
+  {:id :stack-weight-plate
+   :kind :manipulator
+   :procedure "palletising arm picks a finished bumper plate from the deflash station and lays it on the pallet stack"
+   :params {:l1-m 0.80 :l2-m 0.70 :m1-kg 18.0 :m2-kg 12.0
+            :from [0.90 0.20] :to [0.40 -0.30] :duration-s 2.5 :steps 500}
+   :sweep {:param :payload-kg :values [5.0 10.0 15.0 20.0 25.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 500.0 :basis "estimate: continuous shoulder torque of a ~40 kg-payload palletising arm class"}
+   :boundary {:lo 1.0 :hi 120.0}}
+  {:id :boxed-treadmill-to-dock
+   :kind :transport
+   :procedure "AMR carries boxed treadmills and multi-gyms (box CoG 0.7 m) from final assembly to the shipping dock (100 m)"
+   :params {:mass-kg 250.0 :distance-m 100.0 :v-max-mps 1.2 :a-max-mps2 0.5
+            :brake-decel-mps2 0.8 :drive-force-n 450.0 :crr 0.015
+            :cog-height-m 0.30 :support-half-length-m 0.50 :payload-cog-height-m 0.70
+            :max-time-s 1800.0}
+   :sweep {:param :payload-kg :values [100.0 200.0 400.0 600.0 900.0]}
+   :quantity :cycle-time-s
+   :limit {:max 100.0 :basis "estimate: one dock run inside a 100-second truck-loading takt"}
+   :boundary {:lo 20.0 :hi 4000.0}}]}
