@@ -34,7 +34,7 @@
   append-only vector -- so re-running produces byte-identical output.
 
   Run: `kbb -M:dev:render-html [out-file]`"
-  (:require [kotoba.lang.text :as str]
+  (:require [kotoba.io :as kio] [kotoba.lang.text :as str]
             [langgraph.graph :as g]
             [sportsgoodsmfg.governor :as governor]
             [sportsgoodsmfg.operation :as op]
@@ -403,8 +403,8 @@
   (let [out (or (first args) "docs/samples/operator-console.html")
         result (run-demo!)
         html (render result)
-        f (java.io.File. ^String out)]
-    (when-let [p (.getParentFile f)] (.mkdirs p))
+        f (kio/file ^String out)]
+    (when-let [p (kio/parent-file f)] (kio/mkdirs p))
     (spit f html)
     (println "wrote" out
              (str "(" (count (:runs result)) " actor runs, "
